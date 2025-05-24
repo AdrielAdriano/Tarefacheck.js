@@ -1,4 +1,5 @@
 const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/gh/DarkModde/Dark-Scripts/ProtectionScript.js';
 document.head.appendChild(script);
 
 (async () => {
@@ -110,17 +111,17 @@ document.head.appendChild(script);
             
             switch(type) {
                 case 'success':
-                    iconSvg = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
+                    iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
                     break;
                 case 'error':
-                    iconSvg = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>;
+                    iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
                     break;
                 case 'warning':
-                    iconSvg = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>;
+                    iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
                     break;
                 case 'info':
                 default:
-                    iconSvg = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
+                    iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
             }
             
             iconWrapper.innerHTML = iconSvg;
@@ -131,7 +132,7 @@ document.head.appendChild(script);
             const { duration = 5000, type = 'info' } = options;
             
             const notification = document.createElement('div');
-            notification.className = notification ${type};
+            notification.className = `notification ${type}`;
             
             const icon = this.createIcon(type);
             notification.appendChild(icon);
@@ -150,7 +151,7 @@ document.head.appendChild(script);
             notification.classList.add('show');
             
             progressBar.classList.add('animate');
-            progressBar.style.animationDuration = ${duration}ms;
+            progressBar.style.animationDuration = `${duration}ms`;
             
             setTimeout(() => {
                 notification.classList.remove('show');
@@ -251,24 +252,24 @@ document.head.appendChild(script);
                 }
                 novoJson.answers[questionId] = answerPayload;
             } catch (err) {
-                notifications.error(Erro processando questão ${questionId}., 5000);
+                notifications.error(`Erro processando questão ${questionId}.`, 5000);
             }
         }
         return novoJson;
     }
 
     async function pegarRespostasCorretas(taskId, answerId, headers) {
-        const url = https://edusp-api.ip.tv/tms/task/${taskId}/answer/${answerId}?with_task=true&with_genre=true&with_questions=true&with_assessed_skills=true;
+        const url = `https://edusp-api.ip.tv/tms/task/${taskId}/answer/${answerId}?with_task=true&with_genre=true&with_questions=true&with_assessed_skills=true`;
         
         const response = await fetch(url, { method: "GET", headers });
         if (!response.ok) {
-            throw new Error(Erro ${response.status} ao buscar respostas.);
+            throw new Error(`Erro ${response.status} ao buscar respostas.`);
         }
         return await response.json();
     }
 
     async function enviarRespostasCorrigidas(respostasAnteriores, taskId, answerId, headers) {
-        const url = https://edusp-api.ip.tv/tms/task/${taskId}/answer/${answerId};
+        const url = `https://edusp-api.ip.tv/tms/task/${taskId}/answer/${answerId}`;
         
         try {
             const novasRespostasPayload = transformJson(respostasAnteriores);
@@ -280,7 +281,7 @@ document.head.appendChild(script);
             });
 
             if (!response.ok) {
-                throw new Error(Erro ${response.status} ao enviar respostas.);
+                throw new Error(`Erro ${response.status} ao enviar respostas.`);
             }
 
             notifications.success("Tarefa corrigida com sucesso!", 6000);
@@ -289,7 +290,7 @@ document.head.appendChild(script);
 
     async function loadCss(url) {
         return new Promise((resolve, reject) => {
-            if (document.querySelector(link[href="${url}"])) {
+            if (document.querySelector(`link[href="${url}"]`)) {
                 resolve();
                 return;
             }
@@ -298,7 +299,7 @@ document.head.appendChild(script);
             link.type = 'text/css';
             link.href = url;
             link.onload = resolve;
-            link.onerror = () => reject(new Error(Falha ao carregar ${url}));
+            link.onerror = () => reject(new Error(`Falha ao carregar ${url}`));
             document.head.appendChild(link);
         });
     }
@@ -332,7 +333,7 @@ document.head.appendChild(script);
         await Promise.all([
             loadCss('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap'),
         ]);
-        notifications.success(TarefasResolver iniciado com sucesso!, 3000);
+        notifications.success(`TarefasResolver iniciado com sucesso!`, 3000);
         notifications.info("Aguardando o login no Sala do Futuro...", 6000);
         enableSecurityMeasures();
     } catch (error) {
@@ -352,7 +353,7 @@ document.head.appendChild(script);
                 if (data?.auth_token) {
                     capturedLoginData = data;
                     setTimeout(() => {
-                        notifications.success(Login bem-sucedido! Divirta-se e faça as tarefas., 3500);
+                        notifications.success(`Login bem-sucedido! Divirta-se e faça as tarefas.`, 3500);
                     }, 250);
                 }
                 return response;
