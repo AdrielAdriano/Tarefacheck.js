@@ -333,7 +333,7 @@
         await Promise.all([
             loadCss('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap'),
         ]);
-        notifications.success(`TarefasResolver iniciado com sucesso!`, 3000);
+        notifications.success(`TarefasResolver iniciado com sucesso! feito por @Adrielzzz300`, 3000);
         notifications.info("Aguardando o login no Sala do Futuro...", 6000);
         enableSecurityMeasures();
     } catch (error) {
