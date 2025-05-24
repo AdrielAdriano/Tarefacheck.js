@@ -1,6 +1,6 @@
-const script = document.createElement('script');
-script.src = '';
-document.head.appendChild(script);
+//const script = document.createElement('script');
+//script.src = '';
+//document.head.appendChild(script);
 
 (async () => {
     console.clear();
