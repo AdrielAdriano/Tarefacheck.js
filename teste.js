@@ -1,5 +1,4 @@
-await page.evaluate(async () => {
-  function waitFor(cond, m = 30, d = 100) {
+ function waitFor(cond, m = 30, d = 100) {
     return new Promise((res, rej) => {
       let i = 0;
       const setI = setInterval(() => {
