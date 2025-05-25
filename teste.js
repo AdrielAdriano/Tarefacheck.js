@@ -41,7 +41,7 @@
   }
 
   // Processa comboboxes (1 a 13)
-  for (let i = 1; i <= 13; i++) {
+  for (let i = 1; i <= 50; i++) {
     const id = i + '-', box = document.getElementById(id);
     if (box && box.getAttribute('role') === 'combobox') {
       simulateClick(box);
