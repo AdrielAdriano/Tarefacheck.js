@@ -1,7 +1,3 @@
-//const script = document.createElement('script');
-//script.src = '';
-//document.head.appendChild(script);
-
 (async () => {
     console.clear();
     const noop = () => {};
@@ -20,75 +16,83 @@
 
             const css = `
                 .notification-container {
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    z-index: 9999;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end;
-                    pointer-events: none;
-                }
-                .notification {
-                    background: rgba(20, 20, 20, 0.9);
-                    color: #f0f0f0;
-                    margin-bottom: 10px;
-                    padding: 12px 18px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                    backdrop-filter: blur(8px);
-                    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                    font-size: 13.5px;
-                    width: 280px;
-                    min-height: 50px;
-                    text-align: center;
-                    display: flex;
-                    align-items: center;
-                    position: relative;
-                    overflow: hidden;
-                    pointer-events: auto;
-                    opacity: 0;
-                    transform: translateY(-20px);
-                    transition: opacity 0.3s ease, transform 0.3s ease;
-                }
-                .notification.show {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-                .notification-icon {
-                    margin-right: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .notification-progress {
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    height: 3px;
-                    width: 100%;
-                    background: #f0f0f0;
-                    opacity: 0.8;
-                }
-                @keyframes progress-animation {
-                    from { width: 100%; }
-                    to { width: 0%; }
-                }
-                .notification-progress.animate {
-                    animation: progress-animation linear forwards;
-                }
-                .notification.success .notification-icon {
-                    color: #4caf50;
-                }
-                .notification.error .notification-icon {
-                    color: #f44336;
-                }
-                .notification.info .notification-icon {
-                    color: #2196f3;
-                }
-                .notification.warning .notification-icon {
-                    color: #ff9800;
-                }
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    pointer-events: none;
+}
+
+.notification {
+    background: linear-gradient(135deg, #1e1e2f, #2d2d3f);
+    color: #ffffff;
+    padding: 14px 20px;
+    border-left: 6px solid transparent;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    width: 320px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.6);
+    width: 100%;
+}
+
+@keyframes shrink-bar {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.notification-progress.animate {
+    animation: shrink-bar linear forwards;
+}
+
+.notification.success {
+    border-left-color: #00e676;
+}
+
+.notification.error {
+    border-left-color: #ff3d00;
+}
+
+.notification.info {
+    border-left-color: #29b6f6;
+}
+
+.notification.warning {
+    border-left-color: #ffb300;
+}
+
             `;
 
             const style = document.createElement('style');
