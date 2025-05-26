@@ -1,108 +1,138 @@
 (async () => {
-  // Função que aguarda uma condição ser verdadeira, timeout após 'm' tentativas, intervalo 'd' ms
-  function waitFor(cond, m = 50, d = 100) {
+  function waitFor(cond, m = 30, d = 100) {
     return new Promise((res, rej) => {
       let i = 0;
-      const interval = setInterval(() => {
+      const setI = setInterval(() => {
         if (cond()) {
-          clearInterval(interval);
+          clearInterval(setI);
           res();
         } else if (++i >= m) {
-          clearInterval(interval);
-          rej('Timeout esperando condição');
+          clearInterval(setI);
+          rej('Timeout');
         }
       }, d);
     });
   }
 
-  // Função para disparar eventos de clique realistas
   function simulateClick(el) {
-    ['pointerdown', 'mousedown', 'mouseup', 'click'].forEach(eventType => {
-      el.dispatchEvent(new MouseEvent(eventType, { bubbles: true, cancelable: true, view: window }));
+    ['pointerdown', 'mousedown', 'mouseup', 'click'].forEach(t => {
+      el.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }));
     });
   }
 
-  try {
-    // Aguarda checkbox aparecer e marca os não marcados
-    await waitFor(() => document.querySelectorAll('input[type="checkbox"]').length > 0);
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-      if (!cb.checked) simulateClick(cb);
-    });
-    console.log('Checkboxes marcados.');
+  // === 1. Responde as questões ===
 
-    // Aguarda spans de checkbox e radio e clica neles
-    await waitFor(() => document.querySelectorAll('span.MuiButtonBase-root.MuiCheckbox-root, span.MuiButtonBase-root.MuiRadio-root').length > 0);
-    document.querySelectorAll('span.MuiButtonBase-root.MuiCheckbox-root, span.MuiButtonBase-root.MuiRadio-root').forEach(el => simulateClick(el));
-    console.log('Spans de checkbox e radio clicados.');
+  // Marca checkboxes não marcadas
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    if (!cb.checked) simulateClick(cb);
+  });
 
-    // Processa comboboxes - tenta clicar e selecionar primeira opção
-    for (let i = 1; i <= 50; i++) {
-      const box = document.getElementById(i + '-');
-      if (box && box.getAttribute('role') === 'combobox') {
-        simulateClick(box);
-        try {
-          await waitFor(() => {
-            const menu = document.querySelector('[role="presentation"][id^="menu-"]');
-            return menu && menu.getAttribute('aria-hidden') !== 'true';
-          }, 40, 100);
-          const option = document.querySelector('[role="option"]');
-          if (option) simulateClick(option);
-          await waitFor(() => {
-            const menu = document.querySelector('[role="presentation"][id^="menu-"]');
-            return !menu || menu.getAttribute('aria-hidden') === 'true';
-          }, 40, 100);
-          await new Promise(r => setTimeout(r, 200));
-          console.log(`Combobox ${i} selecionado.`);
-        } catch (e) {
-          console.warn(`Erro ao processar combobox ${i}:`, e);
-        }
+  // Clica nos spans estilizados
+  document.querySelectorAll('span.MuiButtonBase-root.MuiCheckbox-root').forEach(el => el.click());
+  document.querySelectorAll('span.MuiButtonBase-root.MuiRadio-root').forEach(el => el.click());
+
+  // Processa boxes dentro do container
+  const container = document.querySelector('.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.css-1xs0zn6');
+  if (container) {
+    for (const box of container.querySelectorAll('.MuiBox-root')) {
+      simulateClick(box);
+      await new Promise(r => setTimeout(r, 150));
+    }
+  }
+
+  // Processa comboboxes (1 a 13)
+  for (let i = 1; i <= 50; i++) {
+    const id = i + '-', box = document.getElementById(id);
+    if (box && box.getAttribute('role') === 'combobox') {
+      simulateClick(box);
+      try {
+        await waitFor(() => {
+          const p = document.querySelector('[role="presentation"][id^="menu-"]');
+          return p && p.getAttribute('aria-hidden') !== 'true';
+        }, 40, 100);
+        const option = document.querySelector('[role="option"]');
+        if (option) simulateClick(option);
+        await waitFor(() => {
+          const p = document.querySelector('[role="presentation"][id^="menu-"]');
+          return !p || p.getAttribute('aria-hidden') === 'true';
+        }, 40, 100);
+        await new Promise(r => setTimeout(r, 200));
+      } catch (e) {
+        console.warn(Erro combobox id="${id}":, e);
       }
     }
-
-    // Aguarda botão "Finalizar"
-    await waitFor(() => {
-      return document.querySelector('button[data-testid="botao-finalizar"]') ||
-        Array.from(document.querySelectorAll('button')).some(b => b.textContent.toLowerCase().includes('finalizar'));
-    }, 50, 200);
-
-    let btnFinalizar = document.querySelector('button[data-testid="botao-finalizar"]');
-    if (!btnFinalizar) {
-      btnFinalizar = Array.from(document.querySelectorAll('button'))
-        .find(b => b.textContent.toLowerCase().includes('finalizar'));
-    }
-
-    if (!btnFinalizar) throw new Error('Botão "Finalizar" não encontrado.');
-
-    btnFinalizar.style.pointerEvents = 'auto';
-    btnFinalizar.style.visibility = 'visible';
-    btnFinalizar.style.display = 'inline-block';
-    btnFinalizar.disabled = false;
-
-    btnFinalizar.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    btnFinalizar.focus();
-    simulateClick(btnFinalizar);
-    await new Promise(r => setTimeout(r, 500));
-    btnFinalizar.click();
-    console.log('Botão "Finalizar" clicado.');
-
-    // Aguarda botão "Sim" aparecer e clica nele
-    await waitFor(() => document.querySelector('button[data-testid="botao-ok"]'), 50, 200);
-    const btnSim = document.querySelector('button[data-testid="botao-ok"]');
-    if (!btnSim) throw new Error('Botão "Sim" não encontrado.');
-
-    btnSim.style.pointerEvents = 'auto';
-    btnSim.style.visibility = 'visible';
-    btnSim.style.display = 'inline-block';
-    btnSim.disabled = false;
-
-    btnSim.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    btnSim.focus();
-    simulateClick(btnSim);
-    await new Promise(r => setTimeout(r, 500));
-    btnSim.click();
-    console.log('Botão "Sim" clicado.');
-
-  } catch (err) {
-    console.error('Erro no auto responder:', err);
   }
+
+  // === 2. Clica no botão "Finalizar" ===
+  let btnFinalizar = document.querySelector('button[data-testid="botao-finalizar"]');
+  if (!btnFinalizar) {
+    btnFinalizar = Array.from(document.querySelectorAll('button'))
+      .find(b => b.textContent.trim().toLowerCase().includes('finalizar'));
+  }
+
+  if (!btnFinalizar) {
+    console.warn('Botão "Finalizar" não encontrado.');
+    return;
+  }
+
+  btnFinalizar.style.pointerEvents = 'auto';
+  btnFinalizar.style.visibility = 'visible';
+  btnFinalizar.style.display = 'inline-block';
+  btnFinalizar.disabled = false;
+
+  btnFinalizar.scrollIntoView({ behavior: "smooth", block: "center" });
+  btnFinalizar.focus();
+  btnFinalizar.click();
+
+  try {
+    HTMLElement.prototype.click.call(btnFinalizar);
+  } catch (e) {
+    console.warn('Erro forçando click no botão "Finalizar":', e);
+  }
+
+  ['pointerdown', 'mousedown', 'mouseup', 'click'].forEach(t => {
+    btnFinalizar.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }));
+  });
+
+  await new Promise(r => setTimeout(r, 300));
+  btnFinalizar.click();
+  console.log('Botão "Finalizar" clicado.');
+
+  // === 3. Aguarda e clica no botão "Sim" ===
+  try {
+    await waitFor(() => document.querySelector('button[data-testid="botao-ok"]'), 40, 200);
+  } catch {
+    console.warn('Botão "Sim" não apareceu após "Finalizar".');
+    return;
+  }
+
+  const btnSim = document.querySelector('button[data-testid="botao-ok"]');
+  if (!btnSim) {
+    console.warn('Botão "Sim" não encontrado.');
+    return;
+  }
+
+  btnSim.style.pointerEvents = 'auto';
+  btnSim.style.visibility = 'visible';
+  btnSim.style.display = 'inline-block';
+  btnSim.disabled = false;
+
+  btnSim.scrollIntoView({ behavior: "smooth", block: "center" });
+  btnSim.focus();
+  btnSim.click();
+
+  try {
+    HTMLElement.prototype.click.call(btnSim);
+  } catch (e) {
+    console.warn('Erro forçando click no botão "Sim":', e);
+  }
+
+  ['pointerdown', 'mousedown', 'mouseup', 'click'].forEach(t => {
+    btnSim.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }));
+  });
+
+  await new Promise(r => setTimeout(r, 300));
+  btnSim.click();
+
+  console.log('Botão "Sim" clicado.');
 })();
